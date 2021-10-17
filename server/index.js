@@ -6,7 +6,7 @@ const morgan = require("morgan");
 const mongoose = require("mongoose");
 const userRoute = require("./routes/users");
 const authRoute = require("./routes/auth");
-
+const postRoute = require("./routes/posts");
 dotenv.config();
 const port = process.env.PORT || 8080;
 mongoose.connect(
@@ -22,6 +22,7 @@ app.use(helmet());
 app.use(morgan("common"));
 app.use("/api/users", userRoute);
 app.use("/api/auth", authRoute);
+app.use("/api/posts", postRoute);
 
 app.listen(port, () => {
 	console.log("Backend is running");
