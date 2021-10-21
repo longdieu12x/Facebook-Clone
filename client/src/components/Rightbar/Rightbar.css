@@ -2,3 +2,29 @@
   flex: 3;
   height: calc(100vh - 50px);
 }
+.birthdayContainer {
+  display: flex;
+  align-items: center;
+}
+.rightbarWrapper {
+  padding: 20px 20px 0 0;
+}
+.birthdayImg {
+  width: 40px;
+  height: 40px;
+}
+.birthdayText {
+  font-size: 15px;
+  font-weight: 300;
+}
+.rightbarAd {
+  width: 100%;
+  border-radius: 10px;
+  margin: 30px 0;
+}
+.rightbarFriendList {
+  list-style: none;
+}
+.rightbarTitle {
+  margin-bottom: 20px;
+}
