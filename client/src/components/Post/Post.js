@@ -6,10 +6,12 @@ const Post = ({ post }) => {
 	const user = Users.filter((u) => u.id === post.id)[0];
 	const [like, setLike] = useState(post.like);
 	const [isLiked, setIsLiked] = useState(false);
+	const publicFolder = process.env.REACT_APP_PUBLIC_FOLDER;
 	const likeHandler = () => {
 		setIsLiked((state) => !state);
 		setLike(isLiked ? like - 1 : like + 1);
 	};
+
 	return (
 		<div className="post">
 			<div className="postWrapper">
@@ -19,7 +21,7 @@ const Post = ({ post }) => {
 							<>
 								<img
 									className="postProfileImg"
-									src={user.profilePicture}
+									src={publicFolder + user.profilePicture}
 									alt="profile-image"
 								/>
 								<span className="postUsername">{user.username}</span>
@@ -33,7 +35,7 @@ const Post = ({ post }) => {
 				</div>
 				<div className="postCenter">
 					<span className="postText">{post?.desc}</span>
-					<img src={post.photo} alt="post-img" />
+					<img src={publicFolder + post.photo} alt="post-img" />
 				</div>
 				<div className="postBottom">
 					<div className="postBottomLeft">

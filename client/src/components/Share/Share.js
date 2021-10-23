@@ -2,13 +2,14 @@ import React from "react";
 import "./Share.css";
 import { PermMedia, Label, Room, EmojiEmotions } from "@mui/icons-material";
 const Share = () => {
+	const publicFolder = process.env.REACT_APP_PUBLIC_FOLDER;
 	return (
 		<div className="share">
 			<div className="shareWrapper">
 				<div className="shareTop">
 					<img
 						className="shareProfileImg"
-						src="assets/person/1.jpg"
+						src={`${publicFolder}person/1.jpg`}
 						alt="share-profile-img"
 					/>
 					<input
