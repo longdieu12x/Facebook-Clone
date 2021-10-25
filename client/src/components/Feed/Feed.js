@@ -3,22 +3,30 @@ import "./Feed.css";
 import Share from "../Share/Share";
 import Post from "../Post/Post";
 import { getTimelineUser } from "../../services/timeline";
+import { getProfile } from "../../services/user";
+
 // import { Posts } from "src/dummyData";
-const Feed = () => {
+const Feed = ({ user_id, profile }) => {
 	const [posts, setPosts] = useState([]);
 	// const [text, setText] = useState("");
 	useEffect(() => {
-		getTimelineUser("61744419a4450cd5a1ac68c8", (res) => {
-			console.log(res);
-		});
+		profile
+			? getProfile(user_id, (res) => {
+					// console.log(res);
+					setPosts(res);
+			  })
+			: getTimelineUser(user_id, (res) => {
+					setPosts(res);
+					// console.log(res);
+			  });
 	}, []);
 	return (
 		<div className="feed">
 			<div className="feedWrapper">
-				<Share />
-				{/* {Posts.map((item) => (
-					<Post post={item} key={item.id} />
-				))} */}
+				<Share user_id={user_id} />
+				{posts.map((item) => (
+					<Post post={item} key={item._id} />
+				))}
 			</div>
 		</div>
 	);

@@ -1,15 +1,28 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./Share.css";
 import { PermMedia, Label, Room, EmojiEmotions } from "@mui/icons-material";
-const Share = () => {
+import { getUserDetail } from "src/services/user";
+const Share = ({ user_id }) => {
 	const publicFolder = process.env.REACT_APP_PUBLIC_FOLDER;
+	// console.log(user.profilePicture);
+	const [user, setUser] = useState([]);
+	useEffect(() => {
+		getUserDetail(user_id, (res) => {
+			setUser(res);
+			// console.log(res);
+		});
+	}, [user_id]);
 	return (
 		<div className="share">
 			<div className="shareWrapper">
 				<div className="shareTop">
 					<img
 						className="shareProfileImg"
-						src={`${publicFolder}person/1.jpg`}
+						src={
+							user.profilePicture
+								? `${publicFolder}${user.profilePicture}`
+								: `${publicFolder}person/noAvatar.png`
+						}
 						alt="share-profile-img"
 					/>
 					<input
