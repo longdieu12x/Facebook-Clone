@@ -19,14 +19,12 @@ const Feed = ({ user_id, profile }) => {
 					setPosts(res);
 					// console.log(res);
 			  });
-	}, []);
+	}, [user_id]);
 	return (
 		<div className="feed">
 			<div className="feedWrapper">
 				<Share user_id={user_id} />
-				{posts.map((item) => (
-					<Post post={item} key={item._id} />
-				))}
+				{posts && posts.map((item) => <Post post={item} key={item._id} />)}
 			</div>
 		</div>
 	);

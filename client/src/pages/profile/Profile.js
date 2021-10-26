@@ -10,6 +10,7 @@ import { getUserDetail } from "src/services/user";
 const Profile = () => {
 	const publicFolder = process.env.REACT_APP_PUBLIC_FOLDER;
 	const location = useLocation();
+	// const history = useHistory();
 	const currentUserId = location.pathname.split("/")[2];
 	const [user, setUser] = useState([]);
 	useEffect(() => {

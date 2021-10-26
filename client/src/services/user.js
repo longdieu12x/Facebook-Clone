@@ -24,3 +24,15 @@ export const getProfile = async (user_id, callback) => {
 			}
 		});
 };
+export const userRegisterHandler = (values, callback) => {
+	axios
+		.post(`${process.env.REACT_APP_API}/auth/register`, values)
+		.then((res) => {
+			callback(res.data);
+		})
+		.catch((err) => {
+			if (err.response) {
+				callback(err.response.data);
+			}
+		});
+};

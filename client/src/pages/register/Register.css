@@ -82,3 +82,6 @@
   font-weight: 500;
   cursor: pointer;
 }
+.errorMessage{
+  color: red;
+}
