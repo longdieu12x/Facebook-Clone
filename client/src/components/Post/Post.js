@@ -4,22 +4,30 @@ import { MoreVert } from "@mui/icons-material";
 import { Users } from "src/dummyData";
 import { getUserDetail } from "src/services/user";
 import { format } from "timeago.js";
+import { likePostHandler } from "src/services/post";
 const Post = ({ post }) => {
 	// const user = Users.filter((u) => u.id === post.id)[0];
 	const [user, setUser] = useState([]);
-	const { userId, likes } = post;
-	const [like, setLike] = useState(post.likes.length);
-	const [isLiked, setIsLiked] = useState(false);
+	const { userId, likes: likeArr, _id: post_id } = post;
+	const [like, setLike] = useState(0);
+	// const [isLiked, setIsLiked] = useState(false);
 	const publicFolder = process.env.REACT_APP_PUBLIC_FOLDER;
 	const likeHandler = () => {
-		setIsLiked((state) => !state);
-		setLike(isLiked ? like - 1 : like + 1);
+		likePostHandler(post_id, userId, (res) => {
+			console.log(res);
+			if (res == "The post has been liked") {
+				// console.log("true");
+				setLike(like + 1);
+			} else {
+				setLike(like - 1);
+			}
+		});
 	};
 	useEffect(() => {
 		getUserDetail(userId, (res) => {
 			setUser(res);
 		});
-		setLike(likes);
+		setLike(likeArr.length);
 	}, [userId]);
 	return (
 		<div className="post">
@@ -33,7 +41,7 @@ const Post = ({ post }) => {
 									src={
 										user.profilePicture
 											? publicFolder + user.profilePicture
-											: publicFolder + "user/noAvatar.png"
+											: publicFolder + "person/noAvatar.png"
 									}
 									alt="profile-image"
 								/>

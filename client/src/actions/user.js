@@ -18,3 +18,9 @@ export const userLoginHandler = (values) => async (dispatch) => {
 			}
 		});
 };
+export const userLogoutHandler = () => {
+	localStorage.removeItem(`${process.env.REACT_APP_CONFIG_NAME}_user`);
+	return {
+		type: Actions.LOGOUT_SUCCESS,
+	};
+};

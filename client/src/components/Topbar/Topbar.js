@@ -1,12 +1,25 @@
 import React from "react";
 import "./Topbar.css";
 import { Search, Person, Chat, Notifications } from "@mui/icons-material";
-import profileImage from "../../assets/person/5.jpg";
+// import profileImage from "../../assets/person/5.jpg";
+import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { userLogoutHandler } from "src/actions/user";
+import { useDispatch } from "react-redux";
 const Topbar = () => {
+	const user = useSelector((state) => state.user);
+	const dispatch = useDispatch();
+	const logoutHandler = () => {
+		dispatch(userLogoutHandler());
+	};
 	return (
 		<div className="topbarContainer">
 			<div className="topbarLeft">
-				<span className="logo">Djan</span>
+				<span className="logo">
+					<Link to="/" className="link">
+						Djan
+					</Link>
+				</span>
 			</div>
 			<div className="topbarCenter">
 				<div className="searchbar">
@@ -21,7 +34,9 @@ const Topbar = () => {
 			<div className="topbarRight">
 				<div className="topbarLinks">
 					<span className="topbarLink">Homepage</span>
-					<span className="topbarLink">Timeline</span>
+					<span className="topbarLink" onClick={logoutHandler}>
+						Logout
+					</span>
 				</div>
 				<div className="topbarIcons">
 					<div className="topbarIconItem">
@@ -37,7 +52,17 @@ const Topbar = () => {
 						<span className="topbarIconBadge">3</span>
 					</div>
 				</div>
-				<img src={profileImage} alt="" className="topbarImg" />
+				<Link to={"/profile/" + user.data._id}>
+					<img
+						src={
+							user.data.profilePicture
+								? process.env.REACT_APP_PUBLIC_FOLDER + user.data.profilePicture
+								: process.env.REACT_APP_PUBLIC_FOLDER + "person/noAvatar.png"
+						}
+						alt="avatar"
+						className="topbarImg"
+					/>
+				</Link>
 			</div>
 		</div>
 	);

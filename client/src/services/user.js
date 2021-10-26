@@ -36,3 +36,12 @@ export const userRegisterHandler = (values, callback) => {
 			}
 		});
 };
+export function storeUserData(data) {
+	const { password, ...user } = data;
+	// console.log(data);
+	// console.log(user);
+	localStorage.setItem(
+		`${process.env.REACT_APP_CONFIG_NAME}_user`,
+		JSON.stringify(user)
+	);
+}

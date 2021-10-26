@@ -61,7 +61,10 @@
   font-size: 14px;
   cursor: pointer;
 }
-
+.link {
+  text-decoration: none;
+  color: white;
+}
 .topbarIcons {
   display: flex;
 }

@@ -1,5 +1,10 @@
 import Actions from "src/configs/Actions";
-const initialState = {};
+const initialState = {
+	data:
+		JSON.parse(
+			localStorage.getItem(`${process.env.REACT_APP_CONFIG_NAME}_user`)
+		) || {},
+};
 
 const userReducer = (state = initialState, action) => {
 	switch (action.type) {
@@ -14,6 +19,12 @@ const userReducer = (state = initialState, action) => {
 				...state,
 				data: {},
 				error: action.payload,
+			};
+		case Actions.LOGOUT_SUCCESS:
+			return {
+				...state,
+				data: {},
+				error: null,
 			};
 		default:
 			return { ...state };

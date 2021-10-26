@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { userLoginHandler } from "src/actions/user";
+import { storeUserData } from "src/services/user";
 // import { Link } from "react-router-dom";
 var _ = require("lodash");
 const Login = () => {
@@ -20,6 +21,7 @@ const Login = () => {
 		if (user.error) {
 			setError(user.error);
 		} else if (!_.isEmpty(user.data)) {
+			storeUserData(user.data);
 			setError(null);
 			history.push("/");
 		}

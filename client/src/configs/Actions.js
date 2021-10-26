@@ -3,6 +3,7 @@ const Actions = {
 	LOGIN_SUCCESS: "login success",
 	REGISTER_FAIL: "register fail",
 	REGISTER_SUCCESS: "register success",
+	LOGOUT_SUCCESS: "logout success",
 };
 
 export default Actions;
