@@ -36,6 +36,39 @@ export const userRegisterHandler = (values, callback) => {
 			}
 		});
 };
+export const getUserFriends = (user_id, callback) => {
+	axios
+		.get(`${process.env.REACT_APP_API}/users/friends/${user_id}`)
+		.then((res) => {
+			callback(res.data);
+		})
+		.catch((err) => {
+			if (err.response) {
+				callback(err.response.data);
+			}
+		});
+};
+export const userFollowHandler = (
+	followed,
+	user_id,
+	currentUserId,
+	callback
+) => {
+	let api;
+	followed
+		? (api = `${process.env.REACT_APP_API}/users/${user_id}/unfollow`)
+		: (api = `${process.env.REACT_APP_API}/users/${user_id}/follow`);
+	axios
+		.put(api, { userId: currentUserId })
+		.then((res) => {
+			callback(res.data);
+		})
+		.catch((err) => {
+			if (err.response) {
+				callback(err.response.data);
+			}
+		});
+};
 export function storeUserData(data) {
 	const { password, ...user } = data;
 	// console.log(data);

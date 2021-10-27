@@ -16,7 +16,6 @@ const Profile = () => {
 	useEffect(() => {
 		getUserDetail(currentUserId, (res) => {
 			setUser(res);
-			// console.log(res);
 		});
 	}, [currentUserId]);
 	return (
@@ -53,7 +52,7 @@ const Profile = () => {
 					</div>
 					<div className="profileRightBottom">
 						<Feed user_id={currentUserId} profile></Feed>
-						<Rightbar profile></Rightbar>
+						<Rightbar profile user={user}></Rightbar>
 					</div>
 				</div>
 			</div>

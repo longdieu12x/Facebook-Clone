@@ -14,17 +14,29 @@ const userReducer = (state = initialState, action) => {
 				data: action.payload,
 				error: null,
 			};
-		case Actions.LOGIN_FAIL:
+		case Actions.LOGIN_SUCCESS:
 			return {
 				...state,
-				data: {},
-				error: action.payload,
-			};
-		case Actions.LOGOUT_SUCCESS:
-			return {
-				...state,
-				data: {},
+				data: action.payload,
 				error: null,
+			};
+		case Actions.UNFOLLOW_SUCCESS:
+			return {
+				...state,
+				data: {
+					...state,
+					followings: state.data.followings.filter(
+						(item) => item !== action.payload.id
+					),
+				},
+			};
+		case Actions.FOLLOW_SUCCESS:
+			return {
+				...state,
+				data: {
+					...state,
+					followings: state.data.followings.push(action.payload.id),
+				},
 			};
 		default:
 			return { ...state };

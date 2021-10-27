@@ -1,9 +1,38 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./Rightbar.css";
 import { Users } from "src/dummyData";
 import Online from "../Online/Online";
-// import userEvent from "@testing-library/user-event";
-const Rightbar = ({ profile }) => {
+import { getUserFriends } from "src/services/user";
+import { useHistory } from "react-router";
+import { useSelector } from "react-redux";
+import { Add, Remove } from "@mui/icons-material";
+import { userFollowHandler } from "src/services/user";
+const Rightbar = ({ profile, user }) => {
+	const user_id = user ? user._id : null;
+	const currentUser = useSelector((state) => state.user).data;
+	const [friends, setFriends] = useState([]);
+	const [followed, setFollowed] = useState(false);
+	useEffect(() => {
+		setFollowed(currentUser.followings.includes(user_id));
+	}, [currentUser, user_id]);
+	const history = useHistory();
+	useEffect(() => {
+		if (user_id) {
+			getUserFriends(user_id, (res) => {
+				setFriends(res);
+			});
+		}
+	}, [user_id]);
+	const toFriendProfile = (e) => {
+		const friend_id = e.target.getAttribute("data-key");
+		history.push(`/profile/${friend_id}`);
+	};
+	const followHandler = () => {
+		console.log(followed, user_id, currentUser._id);
+		userFollowHandler(followed, user_id, currentUser._id, (res) => {
+			setFollowed((state) => !state);
+		});
+	};
 	return (
 		<div className="rightbar">
 			<div className="rightbarWrapper">
@@ -30,6 +59,12 @@ const Rightbar = ({ profile }) => {
 					</>
 				) : (
 					<>
+						{currentUser._id !== user_id && (
+							<button className="rightbarFollowButton" onClick={followHandler}>
+								{followed ? "Unfollow" : "Follow"}
+								{followed ? <Remove /> : <Add />}
+							</button>
+						)}
 						<h4 className="rightbarTitle">User information</h4>
 						<div className="rightbarInfo">
 							<div className="rightbarInfoItem">
@@ -47,16 +82,28 @@ const Rightbar = ({ profile }) => {
 						</div>
 						<h4 className="rightbarTitle">User friends</h4>
 						<div className="rightbarFollowings">
-							{[1, 2, 3, 4, 5].map((item) => (
-								<div className="rightbarFollowing">
-									<img
-										src="assets/person/1.jpg"
-										alt="rightbar-image"
-										className="rightbarFollowingImg"
-									/>
-									<span className="rightbarFollowingName">Tran Phuc Thanh</span>
-								</div>
-							))}
+							{friends &&
+								friends.map((item) => (
+									<div className="rightbarFollowing">
+										<img
+											src={
+												item.profilePicture
+													? process.env.REACT_APP_PUBLIC_FOLDER +
+													  item.profilePicture
+													: process.env.REACT_APP_PUBLIC_FOLDER +
+													  "person/noAvatar.png"
+											}
+											alt="rightbar-image"
+											onClick={toFriendProfile}
+											className="rightbarFollowingImg"
+											key={item._id}
+											data-key={item._id}
+										/>
+										<span className="rightbarFollowingName">
+											{item.username}
+										</span>
+									</div>
+								))}
 						</div>
 					</>
 				)}

@@ -1,17 +1,39 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./Share.css";
 import { PermMedia, Label, Room, EmojiEmotions } from "@mui/icons-material";
 import { getUserDetail } from "src/services/user";
-const Share = ({ user_id }) => {
+import { uploadImageHandler } from "src/services/image";
+const Share = ({ user_id, createPost }) => {
 	const publicFolder = process.env.REACT_APP_PUBLIC_FOLDER;
 	// console.log(user.profilePicture);
 	const [user, setUser] = useState([]);
+	const description = useRef();
+	const [file, setFile] = useState(null);
+	const submitHandler = (e) => {
+		e.preventDefault();
+		const newPost = {
+			userId: user._id,
+			desc: description.current.value,
+			img: file.name,
+		};
+		createPost(newPost);
+		description.current.value = "";
+	};
+	const uploadImage = (e) => {
+		let formData = new FormData();
+		formData.append("file", e.target.files[0]);
+		uploadImageHandler(formData, (res) => {
+			console.log(res);
+			setFile(e.target.files[0]);
+		});
+	};
 	useEffect(() => {
 		getUserDetail(user_id, (res) => {
 			setUser(res);
 			// console.log(res);
 		});
 	}, [user_id]);
+
 	return (
 		<div className="share">
 			<div className="shareWrapper">
@@ -28,16 +50,26 @@ const Share = ({ user_id }) => {
 					<input
 						type="text"
 						className="shareInput"
-						placeholder="What's in your mind Safak ?"
+						ref={description}
+						placeholder={`What's in your mind ${user.username} ?`}
 					/>
 				</div>
 				<hr className="shareHr" />
-				<div className="shareBottom">
+				<form className="shareBottom" onSubmit={submitHandler}>
 					<div className="shareOptions">
-						<div className="shareOption">
+						<label htmlFor="file" className="shareOption">
 							<PermMedia htmlColor="tomato" className="shareIcon" />
 							<span className="shareOptionText">Photo or Video</span>
-						</div>
+							<input
+								style={{ display: "none" }}
+								type="file"
+								id="file"
+								accept=".png,.jpeg,.jpg"
+								onChange={(e) => {
+									uploadImage(e);
+								}}
+							/>
+						</label>
 						<div className="shareOption">
 							<Label htmlColor="blue" className="shareIcon" />
 							<span className="shareOptionText">Tag</span>
@@ -51,8 +83,10 @@ const Share = ({ user_id }) => {
 							<span className="shareOptionText">Feelings</span>
 						</div>
 					</div>
-					<button className="shareButton">Share</button>
-				</div>
+					<button className="shareButton" type="submit">
+						Share
+					</button>
+				</form>
 			</div>
 		</div>
 	);

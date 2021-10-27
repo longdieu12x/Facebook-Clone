@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from "react";
 import "./Post.css";
 import { MoreVert } from "@mui/icons-material";
-import { Users } from "src/dummyData";
 import { getUserDetail } from "src/services/user";
 import { format } from "timeago.js";
+import { useHistory } from "react-router";
 import { likePostHandler } from "src/services/post";
 const Post = ({ post }) => {
 	// const user = Users.filter((u) => u.id === post.id)[0];
 	const [user, setUser] = useState([]);
 	const { userId, likes: likeArr, _id: post_id } = post;
 	const [like, setLike] = useState(0);
-	// const [isLiked, setIsLiked] = useState(false);
+	const history = useHistory();
 	const publicFolder = process.env.REACT_APP_PUBLIC_FOLDER;
 	const likeHandler = () => {
 		likePostHandler(post_id, userId, (res) => {
@@ -27,13 +27,20 @@ const Post = ({ post }) => {
 		getUserDetail(userId, (res) => {
 			setUser(res);
 		});
-		setLike(likeArr.length);
+		likeArr ? setLike(likeArr.length) : setLike(0);
 	}, [userId]);
+	const profileUser = () => {
+		history.push(`/profile/${userId}`);
+	};
 	return (
 		<div className="post">
 			<div className="postWrapper">
 				<div className="postTop">
-					<div className="postTopLeft">
+					<div
+						className="postTopLeft"
+						onClick={profileUser}
+						style={{ cursor: "pointer" }}
+					>
 						{user && (
 							<>
 								<img
@@ -56,7 +63,15 @@ const Post = ({ post }) => {
 				</div>
 				<div className="postCenter">
 					<span className="postText">{post?.desc}</span>
-					<img src={post.img ? publicFolder + post.img : ""} alt="post-img" />
+					{post.img ? (
+						<img
+							src={publicFolder + post.img}
+							className="postImg"
+							alt="post-img"
+						/>
+					) : (
+						""
+					)}
 				</div>
 				<div className="postBottom">
 					<div className="postBottomLeft">
