@@ -25,37 +25,24 @@ export const userLogoutHandler = () => {
 	};
 };
 export const userFollowHandler =
-	(followed, user_id, currentUserId) => async (dispatch) => {
+	(user_id, currentUserId) => async (dispatch) => {
 		let api;
-		followed
-			? (api = `${process.env.REACT_APP_API}/users/${user_id}/unfollow`)
-			: (api = `${process.env.REACT_APP_API}/users/${user_id}/follow`);
-		axios
-			.put(api, { userId: currentUserId })
-			.then((res) => {
-				if (followed) {
-					dispatch({
-						type: Actions.FOLLOW_SUCCESS,
-						id: user_id,
-					});
-				} else {
-					dispatch({
-						type: Actions.UNFOLLOW_SUCCESS,
-						id: user_id,
-					});
-				}
-			})
-			.catch((err) => {
-				if (followed) {
-					dispatch({
-						type: Actions.FOLLOW_FAIL,
-						id: user_id,
-					});
-				} else {
-					dispatch({
-						type: Actions.UNFOLLOW_FAIL,
-						id: user_id,
-					});
-				}
+		api = `${process.env.REACT_APP_API}/users/${user_id}/follow`;
+		axios.put(api, { userId: currentUserId }).then(() => {
+			dispatch({
+				type: Actions.FOLLOW_SUCCESS,
+				id: user_id,
 			});
+		});
+	};
+export const userUnfollowHandler =
+	(user_id, currentUserId) => async (dispatch) => {
+		let api;
+		api = `${process.env.REACT_APP_API}/users/${user_id}/unfollow`;
+		axios.put(api, { userId: currentUserId }).then(() => {
+			dispatch({
+				type: Actions.UNFOLLOW_SUCCESS,
+				id: user_id,
+			});
+		});
 	};

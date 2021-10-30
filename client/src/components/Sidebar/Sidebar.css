@@ -4,9 +4,7 @@
   overflow-y: scroll;
   position: -webkit-sticky !important;
   position: sticky !important;
-  /* top: 50px !important; */
   top: 0;
-  /* top: 50px; */
 }
 
 ::-webkit-scrollbar {

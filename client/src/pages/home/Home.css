@@ -1,6 +1,7 @@
 .homeContainer{
   display: flex;
   width: 100%;
-  overflow-y: scroll !important;
+  height: calc(100vh - 50px);
+  overflow-y: auto!important;
   /* overflow: hidden !important; */
 }

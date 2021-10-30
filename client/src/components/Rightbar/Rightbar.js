@@ -2,20 +2,26 @@ import React, { useEffect, useState } from "react";
 import "./Rightbar.css";
 import { Users } from "src/dummyData";
 import Online from "../Online/Online";
-import { getUserFriends } from "src/services/user";
+import { getUserFriends, storeUserData } from "src/services/user";
 import { useHistory } from "react-router";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Add, Remove } from "@mui/icons-material";
-import { userFollowHandler } from "src/services/user";
-const Rightbar = ({ profile, user }) => {
+// import { getUserDetail } from "src/services/user";
+import { userFollowHandler, userUnfollowHandler } from "src/actions/user";
+const Rightbar = ({ profile, user, isLogged }) => {
 	const user_id = user ? user._id : null;
 	const currentUser = useSelector((state) => state.user).data;
+	const currentUserId = currentUser._id;
 	const [friends, setFriends] = useState([]);
 	const [followed, setFollowed] = useState(false);
-	useEffect(() => {
-		setFollowed(currentUser.followings.includes(user_id));
-	}, [currentUser, user_id]);
 	const history = useHistory();
+	const dispatch = useDispatch();
+
+	useEffect(() => {
+		if (isLogged && currentUser.followings) {
+			setFollowed(currentUser.followings.includes(user_id));
+		} else setFollowed(false);
+	}, [currentUser, user_id]);
 	useEffect(() => {
 		if (user_id) {
 			getUserFriends(user_id, (res) => {
@@ -23,15 +29,34 @@ const Rightbar = ({ profile, user }) => {
 			});
 		}
 	}, [user_id]);
+	useEffect(() => {
+		const data = { ...currentUser };
+		if (followed && isLogged) {
+			data.followings.push(user_id);
+		} else {
+			data.followings = data.followings
+				? data.followings.filter((item) => item !== user_id)
+				: data.followings;
+		}
+		localStorage.removeItem(`${process.env.REACT_APP_CONFIG_NAME}_user`);
+		storeUserData(data);
+	}, [followed]);
 	const toFriendProfile = (e) => {
 		const friend_id = e.target.getAttribute("data-key");
 		history.push(`/profile/${friend_id}`);
 	};
 	const followHandler = () => {
-		console.log(followed, user_id, currentUser._id);
-		userFollowHandler(followed, user_id, currentUser._id, (res) => {
-			setFollowed((state) => !state);
-		});
+		if (isLogged === false) {
+			history.push("/login");
+		} else if (followed && isLogged) {
+			dispatch(userUnfollowHandler(user_id, currentUser._id)).then(() => {
+				setFollowed(false);
+			});
+		} else {
+			dispatch(userFollowHandler(user_id, currentUser._id)).then(() => {
+				setFollowed(true);
+			});
+		}
 	};
 	return (
 		<div className="rightbar">
@@ -59,7 +84,7 @@ const Rightbar = ({ profile, user }) => {
 					</>
 				) : (
 					<>
-						{currentUser._id !== user_id && (
+						{currentUserId !== user_id && (
 							<button className="rightbarFollowButton" onClick={followHandler}>
 								{followed ? "Unfollow" : "Follow"}
 								{followed ? <Remove /> : <Add />}

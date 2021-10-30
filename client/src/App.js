@@ -1,10 +1,14 @@
-import "./App.js";
-import React from "react";
+import classes from "./App.module.css";
+import React, { useEffect } from "react";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { userFriendsHandler } from "src/actions/friend";
 const Login = React.lazy(() => import("./pages/login/Login"));
 const Register = React.lazy(() => import("./pages/register/Register"));
 const Profile = React.lazy(() => import("./pages/profile/Profile"));
 const Home = React.lazy(() => import("./pages/home/Home"));
+const Messenger = React.lazy(() => import("./pages/messenger/Messenger"));
+
 const loading = (
 	<div
 		style={{
@@ -21,8 +25,15 @@ const loading = (
 );
 
 function App() {
+	const dispatch = useDispatch();
+	const user = useSelector((state) => state.user);
+	useEffect(() => {
+		if (Object.keys(user.data).length !== 0) {
+			dispatch(userFriendsHandler(user.data._id));
+		}
+	}, [user.data]);
 	return (
-		<div className="app">
+		<div className={classes.app}>
 			<BrowserRouter>
 				<React.Suspense fallback={loading}>
 					<Switch>
@@ -46,8 +57,15 @@ function App() {
 						/>
 						<Route
 							path="/"
+							exact
 							name="Home"
 							render={(props) => <Home {...props} />}
+						/>
+						<Route
+							path="/messenger"
+							exact
+							name="Messenger"
+							render={(props) => <Messenger {...props} />}
 						/>
 					</Switch>
 				</React.Suspense>

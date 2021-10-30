@@ -6,15 +6,16 @@ import Feed from "../../components/Feed/Feed";
 import Rightbar from "../../components/Rightbar/Rightbar";
 import { useLocation } from "react-router";
 import { getUserDetail } from "src/services/user";
-
+import { useSelector } from "react-redux";
 const Profile = () => {
+	const userLogged = useSelector((state) => state.user).data;
 	const publicFolder = process.env.REACT_APP_PUBLIC_FOLDER;
 	const location = useLocation();
-	// const history = useHistory();
 	const currentUserId = location.pathname.split("/")[2];
 	const [user, setUser] = useState([]);
 	useEffect(() => {
 		getUserDetail(currentUserId, (res) => {
+			console.log(res);
 			setUser(res);
 		});
 	}, [currentUserId]);
@@ -52,7 +53,11 @@ const Profile = () => {
 					</div>
 					<div className="profileRightBottom">
 						<Feed user_id={currentUserId} profile></Feed>
-						<Rightbar profile user={user}></Rightbar>
+						<Rightbar
+							profile
+							user={user}
+							isLogged={Object.keys(userLogged).length !== 0 ? true : false}
+						></Rightbar>
 					</div>
 				</div>
 			</div>

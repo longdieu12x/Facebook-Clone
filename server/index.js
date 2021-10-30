@@ -9,8 +9,11 @@ const userRoute = require("./routes/users");
 const authRoute = require("./routes/auth");
 const postRoute = require("./routes/posts");
 const router = express.Router();
+const conversationRoute = require("./routes/conversations");
+const messageRoute = require("./routes/messages");
 const path = require("path");
 const cors = require("cors");
+
 dotenv.config();
 
 mongoose.connect(
@@ -23,24 +26,23 @@ mongoose.connect(
 app.use("/images", express.static(path.join(__dirname, "public/images")));
 
 //middleware
-app.use(cors());
 app.use(express.json());
 app.use(helmet());
 app.use(morgan("common"));
-
+app.use(cors());
 const storage = multer.diskStorage({
 	destination: (req, file, cb) => {
 		cb(null, "public/images");
 	},
 	filename: (req, file, cb) => {
-		cb(null, file.originalname);
+		cb(null, req.body.name);
 	},
 });
 
 const upload = multer({ storage: storage });
 app.post("/api/upload", upload.single("file"), (req, res) => {
 	try {
-		return res.status(200).json("File uploaded successfully");
+		return res.status(200).json("File uploded successfully");
 	} catch (error) {
 		console.error(error);
 	}
@@ -49,7 +51,9 @@ app.post("/api/upload", upload.single("file"), (req, res) => {
 app.use("/api/auth", authRoute);
 app.use("/api/users", userRoute);
 app.use("/api/posts", postRoute);
+app.use("/api/conversations", conversationRoute);
+app.use("/api/messages", messageRoute);
 
 app.listen(process.env.PORT, () => {
-	console.log("Backend server is running! " + process.env.PORT);
+	console.log("Backend server is running!");
 });

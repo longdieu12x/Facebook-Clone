@@ -24,9 +24,9 @@ const userReducer = (state = initialState, action) => {
 			return {
 				...state,
 				data: {
-					...state,
+					...state.data,
 					followings: state.data.followings.filter(
-						(item) => item !== action.payload.id
+						(item) => item !== action.id
 					),
 				},
 			};
@@ -34,8 +34,10 @@ const userReducer = (state = initialState, action) => {
 			return {
 				...state,
 				data: {
-					...state,
-					followings: state.data.followings.push(action.payload.id),
+					...state.data,
+					followings: state.data.followings.includes(action.id)
+						? [...state.data.followings]
+						: [...state.data.followings, action.id],
 				},
 			};
 		default:

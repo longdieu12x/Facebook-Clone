@@ -77,4 +77,5 @@ export function storeUserData(data) {
 		`${process.env.REACT_APP_CONFIG_NAME}_user`,
 		JSON.stringify(user)
 	);
+	// window.location.reload();
 }

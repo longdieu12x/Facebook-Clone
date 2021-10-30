@@ -6,11 +6,13 @@ import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { userLogoutHandler } from "src/actions/user";
 import { useDispatch } from "react-redux";
+import { useHistory } from "react-router";
 const Topbar = () => {
 	const user = useSelector((state) => state.user);
 	const dispatch = useDispatch();
 	const logoutHandler = () => {
 		dispatch(userLogoutHandler());
+		window.location.reload();
 	};
 	return (
 		<div className="topbarContainer">

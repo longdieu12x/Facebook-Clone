@@ -5,6 +5,7 @@
   display: flex;
   align-items: center;
   position: sticky;
+  position: -webkit-sticky;
   top: 0;
   z-index: 999;
 }
@@ -61,10 +62,12 @@
   font-size: 14px;
   cursor: pointer;
 }
+
 .link {
   text-decoration: none;
   color: white;
 }
+
 .topbarIcons {
   display: flex;
 }

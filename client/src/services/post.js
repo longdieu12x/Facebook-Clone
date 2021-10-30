@@ -17,7 +17,7 @@ export const likePostHandler = (post_id, user_id, callback) => {
 
 export const createPostHandler = (post, callback) => {
 	axios
-		.post(`${process.env.REACT_APP_API}/posts/create`, post)
+		.post(`${process.env.REACT_APP_API}/posts/`, post)
 		.then((res) => {
 			callback(res.data);
 		})
