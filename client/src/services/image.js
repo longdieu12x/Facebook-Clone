@@ -6,7 +6,9 @@ export const uploadImageHandler = (file, callback) => {
 		.then((res) => {
 			callback(res.data);
 		})
-		.catch((res) => {
-			callback(res.response.data);
+		.catch((err) => {
+			if (err.response) {
+				callback(err.response.data);
+			}
 		});
 };

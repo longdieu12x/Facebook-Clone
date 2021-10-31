@@ -3,6 +3,8 @@ import React, { useEffect } from "react";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { userFriendsHandler } from "src/actions/friend";
+import { getAllConversations } from "src/actions/conversation";
+
 const Login = React.lazy(() => import("./pages/login/Login"));
 const Register = React.lazy(() => import("./pages/register/Register"));
 const Profile = React.lazy(() => import("./pages/profile/Profile"));
@@ -30,6 +32,7 @@ function App() {
 	useEffect(() => {
 		if (Object.keys(user.data).length !== 0) {
 			dispatch(userFriendsHandler(user.data._id));
+			dispatch(getAllConversations(user.data._id));
 		}
 	}, [user.data]);
 	return (

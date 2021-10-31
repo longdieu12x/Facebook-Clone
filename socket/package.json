@@ -1,0 +1,23 @@
+{
+  "name": "facebook-clone",
+  "version": "1.0.0",
+  "description": "clone facebook with mern stack",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/longdieu12x/Facebook-Clone.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/longdieu12x/Facebook-Clone/issues"
+  },
+  "homepage": "https://github.com/longdieu12x/Facebook-Clone#readme",
+  "dependencies": {
+    "nodemon": "^2.0.14",
+    "socket.io": "^4.3.1"
+  }
+}

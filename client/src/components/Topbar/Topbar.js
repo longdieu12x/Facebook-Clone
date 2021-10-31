@@ -10,9 +10,17 @@ import { useHistory } from "react-router";
 const Topbar = () => {
 	const user = useSelector((state) => state.user);
 	const dispatch = useDispatch();
+	const history = useHistory();
 	const logoutHandler = () => {
 		dispatch(userLogoutHandler());
 		window.location.reload();
+	};
+	const goToMessenger = () => {
+		if (user) {
+			history.push("/messenger");
+		} else {
+			history.push("/login");
+		}
 	};
 	return (
 		<div className="topbarContainer">
@@ -45,7 +53,7 @@ const Topbar = () => {
 						<Person />
 						<span className="topbarIconBadge">1</span>
 					</div>
-					<div className="topbarIconItem">
+					<div className="topbarIconItem" onClick={goToMessenger}>
 						<Chat />
 						<span className="topbarIconBadge">2</span>
 					</div>

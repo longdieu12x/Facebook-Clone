@@ -1,9 +1,12 @@
 import React from "react";
 import "./Conversation.css";
 
-const Conversation = ({ friend }) => {
+const Conversation = ({ friend, conversationHandler }) => {
+	const makeConversation = () => {
+		conversationHandler(friend._id);
+	};
 	return (
-		<div className="conversation">
+		<div className="conversation" onClick={makeConversation}>
 			{friend && (
 				<>
 					<img

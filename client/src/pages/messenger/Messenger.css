@@ -35,7 +35,7 @@
 
 .chatBoxTop {
   height: calc(100vh - 50px - 90px);
-  overflow-y: scroll;
+  /* overflow-y: scroll; */
   padding-right: 10px;
 }
 

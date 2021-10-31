@@ -2,6 +2,7 @@
   display: flex;
   align-items: center;
   padding: 10px;
+  cursor: pointer;
 }
 .conversation:hover {
   background-color: rgb(245,245,245);
