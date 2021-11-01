@@ -1,28 +1,45 @@
 import "./ChatOnline.css";
-import React, { useCallback, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { getUserDetail } from "src/services/user";
-import {
-	getSpecialConversation,
-	createConversation,
-} from "src/services/conversation";
-import { getAllConversations } from "src/actions/conversation";
-import { useDispatch } from "react-redux";
-const ChatOnline = ({ currentUserId, onlineUsers }) => {
+const ChatOnline = ({ currentUserId, onlineUserId, conversationHandler }) => {
+	const [user, setUser] = useState(null);
+	useEffect(() => {
+		if (onlineUserId !== currentUserId) {
+			getUserDetail(onlineUserId, (res) => {
+				setUser(res);
+			});
+		}
+	}, []);
+	const conversationProcess = () => {
+		conversationHandler(onlineUserId);
+	};
 	return (
 		<>
-			<div className="chatOnline">
-				<div className="chatOnlineFriend">
-					<div className="chatOnlineImgContainer">
-						<img
-							className="chatOnlineImg"
-							src="http://localhost:8080/images/person/2.jpg"
-							alt=""
-						/>
-						<div className="chatOnlineBadge"></div>
+			{user ? (
+				<>
+					<div className="chatOnline" onClick={() => conversationProcess()}>
+						<div className="chatOnlineFriend">
+							<div className="chatOnlineImgContainer">
+								<img
+									className="chatOnlineImg"
+									src={
+										user.profilePicture
+											? process.env.REACT_APP_PUBLIC_FOLDER +
+											  user.profilePicture
+											: process.env.REACT_APP_PUBLIC_FOLDER +
+											  "person/noAvatar.png"
+									}
+									alt=""
+								/>
+								<div className="chatOnlineBadge"></div>
+							</div>
+							<span className="chatOnlineName">{user?.username}</span>
+						</div>
 					</div>
-					<span className="chatOnlineName">Khue Dinh</span>
-				</div>
-			</div>
+				</>
+			) : (
+				""
+			)}
 		</>
 	);
 };

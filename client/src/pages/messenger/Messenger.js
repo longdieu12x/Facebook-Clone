@@ -22,36 +22,42 @@ const Messenger = () => {
 	const [messages, setMessages] = useState([]);
 	const [currentMessage, setCurrentMessage] = useState("");
 	const [conversationId, setConversationId] = useState("");
+	const [pageOnlineUser, setPageOnlineUser] = useState(10); // get 10 person user each time
+	const [pageMessage, setPageMessage] = useState(20); // get 20 message user each time
 	const [friendId, setFriendId] = useState("");
-	const socket = useRef(io(`${process.env.REACT_APP_SOCKET_API}`));
+	const socket = useRef();
 	const dispatch = useDispatch();
-	const [onlineUsers, setOnlineUsers] = useState([]);
+	const [onlineUsers, setOnlineUsers] = useState([]); // Những người đang online trên facebook
 	const { user, friends, conversations } = useSelector((state) => state);
 	const loggedUserid = user.data._id;
 	let existedConversations = {};
 
 	useEffect(() => {
-		socket.current = io(`${process.env.REACT_APP_SOCKET_API}`, {
-			transports: ["websocket", "polling", "flashsocket"],
-		});
-		socket.current.on("getMessage", (data) => {
-			setMessages((state) => [
-				...state,
-				{
-					sender: data.senderId,
-					text: data.text,
-					createdAt: Date.now(),
-				},
-			]);
-		});
+		if (Object.keys(user.data).length !== 0) {
+			socket.current = io(`${process.env.REACT_APP_SOCKET_API}`, {
+				transports: ["websocket", "polling", "flashsocket"],
+			});
+			socket.current.on("getMessage", (data) => {
+				setMessages((state) => [
+					...state,
+					{
+						sender: data.senderId,
+						text: data.text,
+						createdAt: Date.now(),
+					},
+				]);
+			});
+		}
 	}, []);
 
 	useEffect(() => {
-		socket.current.emit("addUser", user.data._id);
-		socket.current.on("getUsers", (user) => {
-			console.log(user);
-			setOnlineUsers(user);
-		});
+		if (Object.keys(user.data).length !== 0) {
+			socket.current.emit("addUser", user.data._id);
+			socket.current.on("getUsers", (user) => {
+				console.log(user);
+				setOnlineUsers(user);
+			});
+		}
 	}, [user]);
 
 	if (Object.keys(user.data).length === 0) {
@@ -133,15 +139,17 @@ const Messenger = () => {
 					<div className="chatboxWrapper">
 						<ScrollToBottom className="chatBoxTop">
 							{Object.keys(messages).length !== 0 &&
-								messages.map((item) => (
-									<Message
-										key={uuidv4()}
-										user_id={item.sender}
-										time={item.createdAt}
-										message={item.text}
-										own={item.sender === loggedUserid ? true : false}
-									/>
-								))}
+								messages
+									.slice(pageMessage)
+									.map((item) => (
+										<Message
+											key={uuidv4()}
+											user_id={item.sender}
+											time={item.createdAt}
+											message={item.text}
+											own={item.sender === loggedUserid ? true : false}
+										/>
+									))}
 						</ScrollToBottom>
 						<div className="chatBoxBottom">
 							<textarea
@@ -162,10 +170,17 @@ const Messenger = () => {
 				</div>
 				<div className="chatOnline">
 					<div className="chatOnlineWrapper">
-						<ChatOnline
-							currentUserId={loggedUserid}
-							onlineUsers={onlineUsers}
-						/>
+						{onlineUsers &&
+							onlineUsers
+								.slice(0, pageOnlineUser)
+								.map((onlineUser) => (
+									<ChatOnline
+										key={uuidv4()}
+										currentUserId={loggedUserid}
+										onlineUserId={onlineUser.userId}
+										conversationHandler={conversationHandler}
+									/>
+								))}
 					</div>
 				</div>
 			</div>
