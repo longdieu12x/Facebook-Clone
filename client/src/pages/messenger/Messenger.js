@@ -1,5 +1,5 @@
 import "./Messenger.css";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import Topbar from "src/components/Topbar/Topbar";
 import { useSelector } from "react-redux";
 import { Redirect } from "react-router";
@@ -63,26 +63,6 @@ const Messenger = () => {
 	if (Object.keys(user.data).length === 0) {
 		return <Redirect to="/login" />;
 	}
-	// kiểm tra xem đã trò chuyện chưa ( có trong list conversations chưa ), có rồi thì get Message chưa có thì create
-	const conversationHandler = (friend_id) => {
-		setFriendId(friend_id);
-		if (Object.keys(conversations).length !== 0) {
-			existedConversations = Object.values(conversations).filter((item) =>
-				item.members.includes(friend_id)
-			);
-		}
-		if (Object.keys(existedConversations).length !== 0) {
-			const existedConversationId = existedConversations[0]._id;
-			setConversationId(existedConversationId);
-			getMessageConversation(existedConversationId, (res) => {
-				setMessages(res);
-			});
-		} else {
-			createConversation(loggedUserid, friend_id, (res) => {
-				dispatch(getAllConversations(loggedUserid)); //update converasations in redux
-			});
-		}
-	};
 	const sendMessageHandler = () => {
 		if (conversationId) {
 			const values = {
@@ -113,6 +93,27 @@ const Messenger = () => {
 			);
 		}
 	};
+	// kiểm tra xem đã trò chuyện chưa ( có trong list conversations chưa ), có rồi thì get Message chưa có thì create
+	// Lí do không thêm được usecallback vào đây là do đang dùng dispatch ở đây rồi
+	const conversationHandler = (friend_id) => {
+		setFriendId(friend_id);
+		if (Object.keys(conversations).length !== 0) {
+			existedConversations = Object.values(conversations).filter((item) =>
+				item.members.includes(friend_id)
+			);
+		}
+		if (Object.keys(existedConversations).length !== 0) {
+			const existedConversationId = existedConversations[0]._id;
+			setConversationId(existedConversationId);
+			getMessageConversation(existedConversationId, (res) => {
+				setMessages(res);
+			});
+		} else {
+			createConversation(loggedUserid, friend_id, (res) => {
+				dispatch(getAllConversations(loggedUserid)); //update converasations in redux
+			});
+		}
+	};
 	return (
 		<React.Fragment>
 			<Topbar />
@@ -139,17 +140,31 @@ const Messenger = () => {
 					<div className="chatboxWrapper">
 						<ScrollToBottom className="chatBoxTop">
 							{Object.keys(messages).length !== 0 &&
-								messages
-									.slice(pageMessage)
-									.map((item) => (
-										<Message
-											key={uuidv4()}
-											user_id={item.sender}
-											time={item.createdAt}
-											message={item.text}
-											own={item.sender === loggedUserid ? true : false}
-										/>
-									))}
+								(messages.length >= 20
+									? messages.slice(pageMessage).map((item, index) => {
+											return (
+												<Message
+													friend_id={friendId}
+													key={index}
+													user_id={item.sender}
+													time={item.createdAt}
+													message={item.text}
+													own={item.sender === loggedUserid ? true : false}
+												/>
+											);
+									  })
+									: messages.map((item, index) => {
+											return (
+												<Message
+													friend_id={friendId}
+													key={index}
+													user_id={item.sender}
+													time={item.createdAt}
+													message={item.text}
+													own={item.sender === loggedUserid ? true : false}
+												/>
+											);
+									  }))}
 						</ScrollToBottom>
 						<div className="chatBoxBottom">
 							<textarea
@@ -173,9 +188,9 @@ const Messenger = () => {
 						{onlineUsers &&
 							onlineUsers
 								.slice(0, pageOnlineUser)
-								.map((onlineUser) => (
+								.map((onlineUser, index) => (
 									<ChatOnline
-										key={uuidv4()}
+										key={index}
 										currentUserId={loggedUserid}
 										onlineUserId={onlineUser.userId}
 										conversationHandler={conversationHandler}

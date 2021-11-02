@@ -1,5 +1,5 @@
 import "./ChatOnline.css";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { getUserDetail } from "src/services/user";
 const ChatOnline = ({ currentUserId, onlineUserId, conversationHandler }) => {
 	const [user, setUser] = useState(null);
@@ -43,4 +43,4 @@ const ChatOnline = ({ currentUserId, onlineUserId, conversationHandler }) => {
 		</>
 	);
 };
-export default ChatOnline;
+export default React.memo(ChatOnline);

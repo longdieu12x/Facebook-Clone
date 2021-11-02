@@ -2,7 +2,8 @@ import "./Message.css";
 import React, { useState, useEffect } from "react";
 import { format } from "timeago.js";
 import { getUserDetail } from "src/services/user";
-const Message = ({ own, message, currentTime, user_id }) => {
+const Message = (props) => {
+	const { own, message, currentTime, user_id, friend_id } = props;
 	const [user, setUser] = useState(null);
 	useEffect(() => {
 		getUserDetail(user_id, (res) => {
@@ -28,4 +29,4 @@ const Message = ({ own, message, currentTime, user_id }) => {
 	);
 };
 
-export default Message;
+export default React.memo(Message);
